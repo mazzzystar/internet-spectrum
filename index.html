@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipboard Challenge</title>
+
+    <!-- Include Roboto font via Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Include Tailwind CSS via CDN as a stylesheet -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Optional: Define a custom utility for uppercase letters with a larger size */
+        .big-letter {
+            font-size: 1.8rem;
+        }
+
+        .spectrum-gradient {
+            background: linear-gradient(90deg, #f56565, #f6ad55, #f6e05e, #68d391, #4fd1c5, #4299e1, #667eea, #9f7aea);
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            max-height: 500px;  /* Adjust based on your design needs */
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-900 py-10 px-4 md:px-16 font-roboto spectrum-gradient">
+    <div class="max-w-3xl mx-auto text-center mb-8">
+        <h1 class="text-4xl text-black font-bold">Internet Spectrum</h1>
+    </div>
+
+    <div class="max-w-3xl mx-auto bg-white rounded-lg shadow p-4 md:p-8">
+        <div id="instructions" class="border-b-2 border-gray-200 pb-4 mb-4">
+            <strong class="text-2xl font-semibold">Instructions:</strong>
+            <p id="instructionText" class="mt-2 text-lg ">Please copy a URL by pressing <span class="bg-blue-200 rounded px-1">Ctrl + C</span> and then paste it into this page using <span class="bg-blue-200 rounded px-1">Ctrl + V</span>.</p>
+
+        </div>
+
+        <div id="content" class="space-y-0 flex flex-col"></div>
+
+        <div class="max-w-3xl mx-auto text-center mt-4">
+            <p class="text-sm storage-notice">The data is stored only in your local storage and will never be uploaded.</p>
+        </div>
+
+        <button onclick="clearData()" class="mt-8 block mx-auto bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition duration-300 text-lg">Clear Data</button>
+    </div>
+
+    <script>
+        // Adjusting instruction based on OS
+        if (navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
+            document.getElementById('instructionText').textContent = "Type 'a' in your browser's search bar, find a website whose main domain begins with 'a', and paste the URL here using Ctrl + C and Ctrl + V. Continue this process sequentially through the alphabet until 'z'.";
+        }
+
+        let currentLetter = 'a';
+        const storedData = JSON.parse(localStorage.getItem('clipboardChallenge') || 'null');
+
+        function getMainDomain(url) {
+            const regex = /^(?:https?:\/\/)?(?:www\.)?([^\.]+)\./i;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function updateDisplay() {
+            let contentDiv = document.getElementById('content');
+            contentDiv.insertAdjacentHTML('beforeend', `<div><span class="big-letter ${storedData && storedData[currentLetter] ? 'text-green-500' : 'text-red-500'}" id="current-${currentLetter}">${currentLetter}</span><span id="url-${currentLetter}" class="text-lg ml-4">${storedData && storedData[currentLetter] ? `${storedData[currentLetter]}` : ''}</span></div>`);
+        }
+
+        // Add paste event listener
+        document.addEventListener('paste', function(e) {
+            let pastedData = e.clipboardData.getData('text');
+            let mainDomain = getMainDomain(pastedData);
+
+            if(mainDomain && mainDomain[0].toLowerCase() === currentLetter) {
+                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
+                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
+                document.getElementById(`url-${currentLetter}`).textContent = pastedData;
+
+                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: pastedData };
+                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
+
+                // Move to next letter
+                currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+                updateDisplay();
+            }
+        });
+
+        function clearData() {
+            localStorage.removeItem('clipboardChallenge');
+            location.reload();  // Refresh the page to start over
+        }
+
+        // Initial display and loading stored data
+        if (storedData) {
+            for (const letter in storedData) {
+                currentLetter = letter;
+                updateDisplay();
+            }
+            currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+        }
+        updateDisplay();
+
+
+        const translations = {
+            'default': {
+                title: 'Internet Spectrum',
+                instruction: "Type 'a' in your browser's search bar, find a website whose main domain begins with 'a', and paste the URL here using Ctrl + C and Ctrl + V. Continue this process sequentially through the alphabet until 'z'.",
+                clearData: 'Clear Data',
+                storageNotice: 'The data is stored only in your local storage and will never be uploaded.'
+            },
+            'zh': {
+                title: '互联网光谱',
+                instruction: "在浏览器的搜索栏中输入'a'，找到一个主域名以'a'开头的网站，并使用Ctrl + C和Ctrl + V将URL粘贴到这里。按字母顺序继续此过程直到'z'。",
+                clearData: '清除数据',
+                storageNotice: '数据仅存储在您的本地存储中，永远不会被上传。'
+            },
+            'ja': {
+                title: 'インターネットスペクトラム',
+                instruction: "ブラウザの検索バーに'a'と入力し、メインドメインが'a'で始まるウェブサイトを探して、Ctrl + CとCtrl + Vを使用してURLをこちらに貼り付けてください。アルファベットの'z'までこのプロセスを順番に続けてください。",
+                clearData: 'データをクリア',
+                storageNotice: 'データはローカルストレージにのみ保存され、アップロードされることはありません。'
+            },
+            'fr': {
+                title: 'Spectre Internet',
+                instruction: "Tapez 'a' dans la barre de recherche de votre navigateur, trouvez un site web dont le domaine principal commence par 'a' et collez l'URL ici à l'aide de Ctrl + C et Ctrl + V. Continuez ce processus séquentiellement à travers l'alphabet jusqu'à 'z'.",
+                clearData: 'Effacer les données',
+                storageNotice: 'Les données sont uniquement stockées dans votre stockage local et ne seront jamais téléchargées.'
+            },
+            'de': {
+                title: 'Internet-Spektrum',
+                instruction: "Geben Sie 'a' in die Suchleiste Ihres Browsers ein, finden Sie eine Website, deren Hauptdomain mit 'a' beginnt, und fügen Sie die URL hier mit Strg + C und Strg + V ein. Fahren Sie sequenziell mit diesem Prozess durch das Alphabet bis 'z' fort.",
+                clearData: 'Daten löschen',
+                storageNotice: 'Die Daten werden nur in Ihrem lokalen Speicher gespeichert und niemals hochgeladen.'
+            },
+            'es': {
+                title: 'Espectro de Internet',
+                instruction: "Escribe 'a' en la barra de búsqueda de tu navegador, encuentra un sitio web cuyo dominio principal comience con 'a' y pega la URL aquí usando Ctrl + C y Ctrl + V. Continúa este proceso secuencialmente a través del alfabeto hasta 'z'.",
+                clearData: 'Borrar datos',
+                storageNotice: 'Los datos se almacenan solo en tu almacenamiento local y nunca se subirán.'
+            },
+            'ru': {
+                title: 'Спектр интернета',
+                instruction: "Введите 'a' в строке поиска вашего браузера, найдите сайт, основной домен которого начинается с 'a', и вставьте URL сюда, используя Ctrl + C и Ctrl + V. Продолжайте этот процесс последовательно через алфавит до 'z'.",
+                clearData: 'Очистить данные',
+                storageNotice: 'Данные хранятся только в вашем локальном хранилище и никогда не будут загружены.'
+            },
+            'it': {
+                title: 'Spettro di Internet',
+                instruction: "Digita 'a' nella barra di ricerca del tuo browser, trova un sito web il cui dominio principale inizia con 'a' e incolla l'URL qui usando Ctrl + C e Ctrl + V. Continua questo processo in sequenza attraverso l'alfabeto fino a 'z'.",
+                clearData: 'Cancella dati',
+                storageNotice: 'I dati vengono conservati solo nel tuo archivio locale e non verranno mai caricati.'
+            },
+            'pt': {
+                title: 'Espectro da Internet',
+                instruction: "Digite 'a' na barra de pesquisa do seu navegador, encontre um site cujo domínio principal comece com 'a' e cole a URL aqui usando Ctrl + C e Ctrl + V. Continue esse processo sequencialmente através do alfabeto até 'z'.",
+                clearData: 'Limpar dados',
+                storageNotice: 'Os dados são armazenados apenas no seu armazenamento local e nunca serão enviados.'
+            },
+            'ar': {
+                title: 'طيف الإنترنت',
+                instruction: "اكتب 'a' في شريط البحث في المتصفح الخاص بك، وابحث عن موقع ويب يبدأ نطاقه الرئيسي بـ 'a'، ثم الصق الرابط هنا باستخدام Ctrl + C و Ctrl + V. واستمر في هذه العملية تسلسليًا عبر الأبجدية حتى 'z'.",
+                clearData: 'مسح البيانات',
+                storageNotice: 'يتم تخزين البيانات فقط في التخزين المحلي الخاص بك ولن يتم تحميلها أبدًا.'
+            },
+            'ko': {
+                title: '인터넷 스펙트럼',
+                instruction: "브라우저의 검색창에 'a'를 입력하고 주 도메인이 'a'로 시작하는 웹사이트를 찾아서 Ctrl + C와 Ctrl + V를 사용하여 여기에 URL을 붙여넣으세요. 알파벳 순서대로 'z'까지 이 과정을 계속해 주세요.",
+                clearData: '데이터 지우기',
+                storageNotice: '데이터는 귀하의 로컬 스토리지에만 저장되며 절대 업로드되지 않습니다.'
+            },
+            'nl': {
+                title: 'Internet Spectrum',
+                instruction: "Typ 'a' in de zoekbalk van je browser, vind een website waarvan het hoofddomein begint met 'a' en plak de URL hier met Ctrl + C en Ctrl + V. Ga zo sequentieel door het alfabet tot 'z'.",
+                clearData: 'Gegevens wissen',
+                storageNotice: 'Gegevens worden alleen opgeslagen in uw lokale opslag en worden nooit geüpload.'
+            }
+        };
+
+
+        function setLanguage(lang) {
+            document.querySelector('h1').textContent = translations[lang]?.title || translations['default'].title;
+            document.getElementById('instructionText').textContent = translations[lang]?.instruction || translations['default'].instruction;
+            document.querySelector('button').textContent = translations[lang]?.clearData || translations['default'].clearData;
+            document.querySelector('.storage-notice').textContent = translations[lang]?.storageNotice || translations['default'].storageNotice;
+        }
+
+        const browserLanguage = navigator.language.substring(0,2);
+        setLanguage(browserLanguage);
+
+
+    </script>
+</body>
+</html>
