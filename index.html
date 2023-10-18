@@ -9,6 +9,8 @@
     <!-- Include Roboto font via Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <!-- Include Tailwind CSS via CDN as a stylesheet -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -28,11 +30,29 @@
             flex-wrap: wrap;
             max-height: 500px;  /* Adjust based on your design needs */
         }
+
+        .github-link {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .github-link:hover {
+            color: #4078c0; /* GitHub's link hover color */
+        }
+
     </style>
 
 </head>
 
 <body class="bg-gray-900 py-10 px-4 md:px-16 font-roboto spectrum-gradient">
+    <a href="https://github.com/mazzzystar/internet-spectrum" target="_blank" class="github-link">
+        <i class="fab fa-github"></i>
+    </a>
+
     <div class="max-w-3xl mx-auto text-center mb-8">
         <h1 class="text-4xl text-black font-bold">Internet Spectrum</h1>
     </div>
