@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
     <!-- Include Tailwind CSS via CDN as a stylesheet -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -45,10 +47,19 @@
         }
 
         #content {
+            background-color: #FFFFFF;  /* Explicitly set a white background */
             display: flex;
             flex-direction: column;
             flex-wrap: wrap;
             max-height: 500px;  /* Adjust based on your design needs */
+        }
+
+        #content .text-lg {
+            color: #555555;  /* Explicitly set a gray color for the URLs */
+        }
+
+        .big-letter {
+            color: #333333;  /* Explicitly set a dark gray color for the big letter */
         }
 
         .github-link {
@@ -62,6 +73,24 @@
 
         .github-link:hover {
             color: #4078c0; /* GitHub's link hover color */
+        }
+
+        .card-title {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 10px;
+            color: gray;
         }
 
     </style>
@@ -120,7 +149,9 @@
         function updateDisplay() {
             if (currentLetter > 'z') {
                 let contentDiv = document.getElementById('content');
-                contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl">Finished!</div>`);
+                // Inside the updateDisplay function:
+                contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl underline cursor-pointer" id="downloadLink">Download</div>`);
+
                 return;  // Stop further execution of this function
             }
 
@@ -128,6 +159,55 @@
             contentDiv.insertAdjacentHTML('beforeend', `<div><span class="big-letter ${storedData && storedData[currentLetter] ? 'text-green-500' : 'text-red-500'}" id="current-${currentLetter}">${currentLetter}</span><span id="url-${currentLetter}" class="text-lg ml-4">${storedData && storedData[currentLetter] ? `${storedData[currentLetter]}` : ''}</span></div>`);
         }
 
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === "downloadLink") {
+                // Temporarily hide the Download link
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.style.display = "none";
+
+                // Set the title for the card
+                const titleElement = document.createElement('h2');
+                titleElement.className = 'card-title';
+                titleElement.textContent = document.querySelector('h1').textContent;
+
+                const content = document.getElementById('content');
+                content.insertBefore(titleElement, content.firstChild);
+
+                // Add website URL at the bottom
+                const footer = document.createElement('div');
+                footer.className = 'card-footer';
+                footer.textContent = 'https://internet-spectrum.vercel.app/';
+                content.appendChild(footer);
+
+                // Add padding to content for a border effect
+                content.style.padding = '20px 20px 50px 20px';
+
+                const scale = window.devicePixelRatio;
+
+                html2canvas(content, {
+                    useCORS: true
+                }).then(function(canvas) {
+                    const scaledCanvas = document.createElement('canvas');
+                    scaledCanvas.width = canvas.width * scale;
+                    scaledCanvas.height = canvas.height * scale;
+
+                    const ctx = scaledCanvas.getContext('2d');
+                    ctx.scale(scale, scale);
+                    ctx.drawImage(canvas, 0, 0);
+
+                    // Restore the original UI elements after capturing
+                    titleElement.remove();
+                    footer.remove();
+                    content.style.padding = '0';
+                    downloadLink.style.display = "block";
+
+                    const link = document.createElement('a');
+                    link.download = 'spectrum_share_card.png';
+                    link.href = scaledCanvas.toDataURL();
+                    link.click();
+                });
+            }
+        });
 
         // Add paste event listener
         document.addEventListener('paste', function(e) {
