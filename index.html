@@ -77,7 +77,7 @@
         <h1 class="text-4xl text-black font-bold">Internet Spectrum</h1>
     </div>
 
-    <div class="max-w-3xl mx-auto bg-white rounded-lg shadow p-4 md:p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-4 md:p-8">
         <div id="instructions" class="border-b-2 border-gray-200 pb-4 mb-4">
             <strong class="text-2xl font-semibold">Instructions:</strong>
             <p id="instructionText" class="mt-2 text-lg ">Please copy a URL by pressing <span class="bg-blue-200 rounded px-1">Ctrl + C</span> and then paste it into this page using <span class="bg-blue-200 rounded px-1">Ctrl + V</span>.</p>
@@ -118,9 +118,16 @@
         }
 
         function updateDisplay() {
+            if (currentLetter > 'z') {
+                let contentDiv = document.getElementById('content');
+                contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl">Finished!</div>`);
+                return;  // Stop further execution of this function
+            }
+
             let contentDiv = document.getElementById('content');
             contentDiv.insertAdjacentHTML('beforeend', `<div><span class="big-letter ${storedData && storedData[currentLetter] ? 'text-green-500' : 'text-red-500'}" id="current-${currentLetter}">${currentLetter}</span><span id="url-${currentLetter}" class="text-lg ml-4">${storedData && storedData[currentLetter] ? `${storedData[currentLetter]}` : ''}</span></div>`);
         }
+
 
         // Add paste event listener
         document.addEventListener('paste', function(e) {
