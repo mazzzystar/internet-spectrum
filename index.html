@@ -142,7 +142,8 @@
 
             return {
                 mainDomain: mainDomainMatch ? mainDomainMatch[1].toLowerCase() : null,
-                croppedUrl: croppedUrlMatch ? croppedUrlMatch[1] : null
+                croppedUrl: croppedUrlMatch ? croppedUrlMatch[1] : null,
+                isValidUrl: mainDomainRegex.test(url) && croppedUrlRegex.test(url)
             };
         }
 
@@ -209,25 +210,40 @@
             }
         });
 
-        // Add paste event listener
-        document.addEventListener('paste', function(e) {
-            let pastedData = e.clipboardData.getData('text');
-            let details = getDomainDetails(pastedData);
-            let mainDomain = details.mainDomain;
+document.addEventListener('paste', function(e) {
+    let pastedData = e.clipboardData.getData('text');
+    let details = getDomainDetails(pastedData);
+    let mainDomain = details.mainDomain;
 
-            if(mainDomain && mainDomain[0] === currentLetter) {
-                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
-                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
-                document.getElementById(`url-${currentLetter}`).textContent = details.croppedUrl;
+    // Check if pasted content starts with current letter, but isn't a valid URL
+    if (pastedData[0].toLowerCase() === currentLetter && !details.isValidUrl) {
+        document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
+        document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
+        document.getElementById(`url-${currentLetter}`).textContent = '-';
 
-                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: details.croppedUrl };
-                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
+        const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: '-' };
+        localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
 
-                // Move to next letter
-                currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
-                updateDisplay();
-            }
-        });
+        // Move to next letter
+        currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+        updateDisplay();
+    }
+    // If main domain starts with the current letter and the URL is in a valid format, store this URL
+    else if(mainDomain && mainDomain[0] === currentLetter) {
+        document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
+        document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
+        document.getElementById(`url-${currentLetter}`).textContent = details.croppedUrl;
+
+        const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: details.croppedUrl };
+        localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
+
+        // Move to next letter
+        currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+        updateDisplay();
+    }
+});
+
+
 
 
         function clearData() {
