@@ -163,7 +163,7 @@
         function updateDisplay(letter) {
             if (letter > 'z') {
                 let contentDiv = document.getElementById('content');
-                contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl underline cursor-pointer" id="downloadLink">Download</div>`);
+                contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl cursor-pointer" id="downloadLink">Finished!</div>`);
                 return;
             }
 
@@ -214,57 +214,6 @@
                     updateDisplay(currentLetter);
                 };
                 img.src = faviconUrl;
-            }
-        });
-
-
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.id === "downloadLink") {
-                // Temporarily hide the Download link
-                const downloadLink = document.getElementById('downloadLink');
-                downloadLink.style.display = "none";
-
-                // Set the title for the card
-                const titleElement = document.createElement('h2');
-                titleElement.className = 'card-title';
-                titleElement.textContent = document.querySelector('h1').textContent;
-
-                const content = document.getElementById('content');
-                content.insertBefore(titleElement, content.firstChild);
-
-                // Add website URL at the bottom
-                const footer = document.createElement('div');
-                footer.className = 'card-footer';
-                footer.textContent = 'https://internet-spectrum.vercel.app/';
-                content.appendChild(footer);
-
-                // Add padding to content for a border effect
-                content.style.padding = '20px 20px 50px 20px';
-
-                const scale = window.devicePixelRatio;
-
-                html2canvas(content, {
-                    useCORS: true
-                }).then(function(canvas) {
-                    const scaledCanvas = document.createElement('canvas');
-                    scaledCanvas.width = canvas.width * scale;
-                    scaledCanvas.height = canvas.height * scale;
-
-                    const ctx = scaledCanvas.getContext('2d');
-                    ctx.scale(scale, scale);
-                    ctx.drawImage(canvas, 0, 0);
-
-                    // Restore the original UI elements after capturing
-                    titleElement.remove();
-                    footer.remove();
-                    content.style.padding = '0';
-                    downloadLink.style.display = "block";
-
-                    const link = document.createElement('a');
-                    link.download = 'spectrum_share_card.png';
-                    link.href = scaledCanvas.toDataURL();
-                    link.click();
-                });
             }
         });
 
