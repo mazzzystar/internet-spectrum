@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clipboard Challenge</title>
+    <title>Internet Spectrum</title>
 
     <!-- Include Roboto font via Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -93,6 +93,12 @@
             color: gray;
         }
 
+        .big-letter {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+
+
     </style>
 
 </head>
@@ -154,18 +160,63 @@
             };
         }
 
-        function updateDisplay() {
-            if (currentLetter > 'z') {
+        function updateDisplay(letter) {
+            if (letter > 'z') {
                 let contentDiv = document.getElementById('content');
-                // Inside the updateDisplay function:
                 contentDiv.insertAdjacentHTML('beforeend', `<div class="text-green-500 text-xl underline cursor-pointer" id="downloadLink">Download</div>`);
-
-                return;  // Stop further execution of this function
+                return;
             }
 
             let contentDiv = document.getElementById('content');
-            contentDiv.insertAdjacentHTML('beforeend', `<div><span class="big-letter ${storedData && storedData[currentLetter] ? 'text-green-500' : 'text-red-500'}" id="current-${currentLetter}">${currentLetter}</span><span id="url-${currentLetter}" class="text-lg ml-4">${storedData && storedData[currentLetter] ? `${storedData[currentLetter]}` : ''}</span></div>`);
+            contentDiv.insertAdjacentHTML('beforeend', `
+                <div class="flex items-center">
+                    <span class="big-letter ${storedData && storedData[currentLetter] ? 'text-green-500' : 'text-red-500'}" id="current-${currentLetter}">${currentLetter}</span>
+                    <img id="favicon-${currentLetter}" style="display: none;" class="ml-4 mr-2" alt="Website Icon">
+                    <span id="url-${currentLetter}" class="text-lg">${storedData && storedData[currentLetter] ? `${storedData[currentLetter]}` : ''}</span>
+                </div>`);
         }
+
+        document.addEventListener('paste', function(e) {
+            let pastedData = e.clipboardData.getData('text');
+            let details = getDomainDetails(pastedData);
+            let mainDomain = details.mainDomain;
+
+            if (pastedData[0].toLowerCase() === currentLetter && !details.isValidUrl) {
+                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
+                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
+                document.getElementById(`url-${currentLetter}`).textContent = '-';
+
+                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: '-' };
+                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
+
+                // Update display before moving to the next letter
+                currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+                updateDisplay(currentLetter);
+            }
+            else if(mainDomain && mainDomain[0] === currentLetter) {
+                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
+                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
+                document.getElementById(`url-${currentLetter}`).textContent = details.croppedUrl;
+
+                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: details.croppedUrl };
+                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
+
+                // Fetch and display favicon
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${details.croppedUrl}`;
+                const img = new Image();
+                img.onload = function() {
+                    let faviconElement = document.getElementById(`favicon-${currentLetter}`);
+                    faviconElement.src = faviconUrl;
+                    faviconElement.style.display = 'inline';
+
+                    // Move to the next letter AFTER loading the favicon
+                    currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
+                    updateDisplay(currentLetter);
+                };
+                img.src = faviconUrl;
+            }
+        });
+
 
         document.addEventListener('click', function(e) {
             if (e.target && e.target.id === "downloadLink") {
@@ -217,38 +268,6 @@
             }
         });
 
-        document.addEventListener('paste', function(e) {
-            let pastedData = e.clipboardData.getData('text');
-            let details = getDomainDetails(pastedData);
-            let mainDomain = details.mainDomain;
-
-            // Check if pasted content starts with current letter, but isn't a valid URL
-            if (pastedData[0].toLowerCase() === currentLetter && !details.isValidUrl) {
-                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
-                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
-                document.getElementById(`url-${currentLetter}`).textContent = '-';
-
-                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: '-' };
-                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
-
-                // Move to next letter
-                currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
-                updateDisplay();
-            }
-            // If main domain starts with the current letter and the URL is in a valid format, store this URL
-            else if(mainDomain && mainDomain[0] === currentLetter) {
-                document.getElementById(`current-${currentLetter}`).classList.remove('text-red-500');
-                document.getElementById(`current-${currentLetter}`).classList.add('text-green-500');
-                document.getElementById(`url-${currentLetter}`).textContent = details.croppedUrl;
-
-                const dataToStore = { ...JSON.parse(localStorage.getItem('clipboardChallenge') || '{}'), [currentLetter]: details.croppedUrl };
-                localStorage.setItem('clipboardChallenge', JSON.stringify(dataToStore));
-
-                // Move to next letter
-                currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
-                updateDisplay();
-            }
-        });
 
 
         function clearData() {
@@ -259,12 +278,26 @@
         // Initial display and loading stored data
         if (storedData) {
             for (const letter in storedData) {
-                currentLetter = letter;
-                updateDisplay();
+                updateDisplay(letter);
+
+                // Restore favicon if there's a valid URL
+                if (storedData[letter] !== '-') {
+                    const faviconUrl = `https://www.google.com/s2/favicons?domain=${storedData[letter]}`;
+                    const img = new Image();
+                    img.onload = function() {
+                        let faviconElement = document.getElementById(`favicon-${letter}`);
+                        faviconElement.src = faviconUrl;
+                        faviconElement.style.display = 'inline';
+                    };
+                    img.src = faviconUrl;
+                }
+
+                // Move to the next letter
+                currentLetter = String.fromCharCode(letter.charCodeAt(0) + 1);
             }
-            currentLetter = String.fromCharCode(currentLetter.charCodeAt(0) + 1);
         }
-        updateDisplay();
+        updateDisplay(currentLetter);
+
 
 
         const translations = {
