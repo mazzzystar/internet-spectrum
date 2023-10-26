@@ -110,6 +110,10 @@
 
     <div class="max-w-3xl mx-auto text-center mb-8">
         <h1 class="text-4xl text-black font-bold">Internet Spectrum</h1>
+
+        <p class="text-left text-black mt-4" id="description">
+            "I often enter URLs in the browser, and Chrome's autocomplete feature comes in handy. For instance, when I type 'a', it suggests completing it with 'apple.com', which means that Apple's website is the one I visit most frequently among sites starting with 'a'. Similarly, for each letter from A to Z, the autocomplete's suggestions of 26 websites could be seen as my personal spectrum of the internet."
+        </p>
     </div>
 
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-4 md:p-8">
@@ -252,72 +256,84 @@
         const translations = {
             'default': {
                 title: 'Internet Spectrum',
+                description: "I often enter URLs in the browser, and Chrome's autocomplete feature comes in handy. For instance, when I type 'a', it suggests completing it with 'apple.com', which means that Apple's website is the one I visit most frequently among sites starting with 'a'. Similarly, for each letter from A to Z, the autocomplete's suggestions of 26 websites could be seen as my personal spectrum of the internet.",
                 instruction: "Type 'a' in your browser's search bar, find a website whose main domain begins with 'a', and paste the URL here using Ctrl + C and Ctrl + V. Continue this process sequentially through the alphabet until 'z'.",
                 clearData: 'Clear Data',
                 storageNotice: 'The data is stored only in your local storage and will never be uploaded.'
             },
             'zh': {
                 title: '互联网光谱',
+                description: "我经常需要在浏览器输入网址，而 Chrome 有自动填充功能，比如我输入'a'，它会想要帮我补全'apple.com'，这其实代表了对于字母'a'开头的网站，我访问最频繁的是苹果官网。那么，如果以此类推，从 a-z ，这些自动补全的 26 个网站是不是就是我的互联网光谱呢？",
                 instruction: "在浏览器的搜索栏中输入'a'，找到一个主域名以'a'开头的网站，并使用Ctrl + C和Ctrl + V将URL粘贴到这里。按字母顺序继续此过程直到'z'。",
                 clearData: '清除数据',
                 storageNotice: '数据仅存储在您的本地存储中，永远不会被上传。'
             },
             'ja': {
                 title: 'インターネットスペクトラム',
+                description: "私はよくブラウザでURLを入力しますが、Chromeのオートコンプリート機能が便利です。例えば、'a'と入力すると、'apple.com'で完成するように提案されます。これは、'a'で始まるサイトの中でAppleのウェブサイトを最も頻繁に訪れていることを意味しています。同様に、AからZまでの各文字について、オートコンプリートの提案する26のウェブサイトは、私の個人的なインターネットスペクトラムと見なすことができます。",
                 instruction: "ブラウザの検索バーに'a'と入力し、メインドメインが'a'で始まるウェブサイトを探して、Ctrl + CとCtrl + Vを使用してURLをこちらに貼り付けてください。アルファベットの'z'までこのプロセスを順番に続けてください。",
                 clearData: 'データをクリア',
                 storageNotice: 'データはローカルストレージにのみ保存され、アップロードされることはありません。'
             },
             'fr': {
                 title: 'Spectre Internet',
+                description: "Je saisis souvent des URL dans le navigateur, et la fonction de saisie automatique de Chrome est pratique. Par exemple, quand je tape 'a', il me suggère de le compléter avec 'apple.com', ce qui signifie que le site web d'Apple est celui que je visite le plus fréquemment parmi les sites commençant par 'a'. De même, pour chaque lettre de A à Z, les 26 suggestions de saisie automatique pourraient être vues comme mon spectre personnel d'Internet.",
                 instruction: "Tapez 'a' dans la barre de recherche de votre navigateur, trouvez un site web dont le domaine principal commence par 'a' et collez l'URL ici à l'aide de Ctrl + C et Ctrl + V. Continuez ce processus séquentiellement à travers l'alphabet jusqu'à 'z'.",
                 clearData: 'Effacer les données',
                 storageNotice: 'Les données sont uniquement stockées dans votre stockage local et ne seront jamais téléchargées.'
             },
             'de': {
                 title: 'Internet-Spektrum',
+                description: "Ich gebe oft URLs in den Browser ein, und die Autovervollständigung von Chrome ist sehr nützlich. Wenn ich zum Beispiel 'a' eingebe, schlägt es vor, dies mit 'apple.com' zu vervollständigen, was bedeutet, dass die Apple-Website diejenige ist, die ich am häufigsten unter den Websites besuche, die mit 'a' beginnen. Ähnlich verhält es sich mit jedem Buchstaben von A bis Z, die 26 Autovervollständigungsvorschläge könnten als mein persönliches Internetspektrum angesehen werden.",
                 instruction: "Geben Sie 'a' in die Suchleiste Ihres Browsers ein, finden Sie eine Website, deren Hauptdomain mit 'a' beginnt, und fügen Sie die URL hier mit Strg + C und Strg + V ein. Fahren Sie sequenziell mit diesem Prozess durch das Alphabet bis 'z' fort.",
                 clearData: 'Daten löschen',
                 storageNotice: 'Die Daten werden nur in Ihrem lokalen Speicher gespeichert und niemals hochgeladen.'
             },
             'es': {
                 title: 'Espectro de Internet',
+                description: "A menudo ingreso URL en el navegador y la función de autocompletar de Chrome es muy útil. Por ejemplo, cuando escribo 'a', sugiere completarlo con 'apple.com', lo que significa que el sitio web de Apple es el que más visito entre los sitios que comienzan con 'a'. De manera similar, para cada letra de la A a la Z, las 26 sugerencias de autocompletar podrían verse como mi espectro personal de Internet.",
                 instruction: "Escribe 'a' en la barra de búsqueda de tu navegador, encuentra un sitio web cuyo dominio principal comience con 'a' y pega la URL aquí usando Ctrl + C y Ctrl + V. Continúa este proceso secuencialmente a través del alfabeto hasta 'z'.",
                 clearData: 'Borrar datos',
                 storageNotice: 'Los datos se almacenan solo en tu almacenamiento local y nunca se subirán.'
             },
             'ru': {
                 title: 'Спектр интернета',
+                description: "Я часто ввожу URL в браузер, и функция автозаполнения Chrome очень помогает. Например, когда я пишу 'a', она предлагает дополнить его до 'apple.com', что означает, что сайт Apple я посещаю чаще всего среди сайтов, начинающихся на 'a'. Точно так же для каждой буквы от A до Z предложения автозаполнения могут быть рассмотрены как мой личный интернет-спектр.",
                 instruction: "Введите 'a' в строке поиска вашего браузера, найдите сайт, основной домен которого начинается с 'a', и вставьте URL сюда, используя Ctrl + C и Ctrl + V. Продолжайте этот процесс последовательно через алфавит до 'z'.",
                 clearData: 'Очистить данные',
                 storageNotice: 'Данные хранятся только в вашем локальном хранилище и никогда не будут загружены.'
             },
             'it': {
                 title: 'Spettro di Internet',
+                description: "Inserisco spesso URL nel browser e la funzione di completamento automatico di Chrome è molto utile. Ad esempio, quando digito 'a', suggerisce di completarlo con 'apple.com', il che significa che il sito Web di Apple è quello che visito più frequentemente tra i siti che iniziano con 'a'. Analogamente, per ogni lettera da A a Z, i 26 suggerimenti di completamento automatico potrebbero essere visti come il mio spettro personale di Internet.",
                 instruction: "Digita 'a' nella barra di ricerca del tuo browser, trova un sito web il cui dominio principale inizia con 'a' e incolla l'URL qui usando Ctrl + C e Ctrl + V. Continua questo processo in sequenza attraverso l'alfabeto fino a 'z'.",
                 clearData: 'Cancella dati',
                 storageNotice: 'I dati vengono conservati solo nel tuo archivio locale e non verranno mai caricati.'
             },
             'pt': {
                 title: 'Espectro da Internet',
+                description: "Eu frequentemente digito URLs no navegador, e o recurso de preenchimento automático do Chrome é útil. Por exemplo, quando digito 'a', ele sugere completar com 'apple.com', o que significa que o site da Apple é o que mais visito entre os sites que começam com 'a'. Da mesma forma, para cada letra de A a Z, as 26 sugestões de preenchimento automático poderiam ser vistas como meu espectro pessoal da Internet.",
                 instruction: "Digite 'a' na barra de pesquisa do seu navegador, encontre um site cujo domínio principal comece com 'a' e cole a URL aqui usando Ctrl + C e Ctrl + V. Continue esse processo sequencialmente através do alfabeto até 'z'.",
                 clearData: 'Limpar dados',
                 storageNotice: 'Os dados são armazenados apenas no seu armazenamento local e nunca serão enviados.'
             },
             'ar': {
                 title: 'طيف الإنترنت',
+                description: "أدخل عناوين URL في المتصفح كثيرًا، وميزة الإكمال التلقائي في Chrome مفيدة للغاية. على سبيل المثال، عندما أكتب 'a'، يقترح إكمالها بـ 'apple.com'، مما يعني أن موقع Apple هو الأكثر زيارة لدي من بين المواقع التي تبدأ بـ 'a'. بطريقة مماثلة، بالنسبة لكل حرف من A إلى Z، يمكن اعتبار اقتراحات الإكمال التلقائي هذه كطيفي الشخصي للإنترنت.",
                 instruction: "اكتب 'a' في شريط البحث في المتصفح الخاص بك، وابحث عن موقع ويب يبدأ نطاقه الرئيسي بـ 'a'، ثم الصق الرابط هنا باستخدام Ctrl + C و Ctrl + V. واستمر في هذه العملية تسلسليًا عبر الأبجدية حتى 'z'.",
                 clearData: 'مسح البيانات',
                 storageNotice: 'يتم تخزين البيانات فقط في التخزين المحلي الخاص بك ولن يتم تحميلها أبدًا.'
             },
             'ko': {
                 title: '인터넷 스펙트럼',
+                description: "저는 종종 브라우저에서 URL을 입력하는데, 크롬의 자동완성 기능이 유용합니다. 예를 들어, 'a'라고 타이핑하면 'apple.com'으로 완성하도록 제안합니다. 이는 'a'로 시작하는 사이트 중에서 애플 웹사이트를 가장 자주 방문한다는 것을 의미합니다. 마찬가지로 A부터 Z까지 각 문자에 대한 자동완성의 제안하는 26개의 웹사이트는 제 개인적인 인터넷 스펙트럼으로 볼 수 있습니다.",
                 instruction: "브라우저의 검색창에 'a'를 입력하고 주 도메인이 'a'로 시작하는 웹사이트를 찾아서 Ctrl + C와 Ctrl + V를 사용하여 여기에 URL을 붙여넣으세요. 알파벳 순서대로 'z'까지 이 과정을 계속해 주세요.",
                 clearData: '데이터 지우기',
                 storageNotice: '데이터는 귀하의 로컬 스토리지에만 저장되며 절대 업로드되지 않습니다.'
             },
             'nl': {
                 title: 'Internet Spectrum',
+                description: "Ik voer vaak URL's in de browser in, en de automatische aanvulling van Chrome is handig. Bijvoorbeeld, wanneer ik 'a' typ, stelt het voor om dit aan te vullen met 'apple.com', wat betekent dat de website van Apple de meest bezochte is onder de sites die beginnen met 'a'. Op dezelfde manier kunnen de 26 automatische aanvullingen voor elke letter van A tot Z worden gezien als mijn persoonlijke spectrum van het internet.",
                 instruction: "Typ 'a' in de zoekbalk van je browser, vind een website waarvan het hoofddomein begint met 'a' en plak de URL hier met Ctrl + C en Ctrl + V. Ga zo sequentieel door het alfabet tot 'z'.",
                 clearData: 'Gegevens wissen',
                 storageNotice: 'Gegevens worden alleen opgeslagen in uw lokale opslag en worden nooit geüpload.'
@@ -327,6 +343,7 @@
 
         function setLanguage(lang) {
             document.querySelector('h1').textContent = translations[lang]?.title || translations['default'].title;
+            document.getElementById('description').textContent = translations[lang]?.description|| translations['default'].description;
             document.getElementById('instructionText').textContent = translations[lang]?.instruction || translations['default'].instruction;
             document.querySelector('button').textContent = translations[lang]?.clearData || translations['default'].clearData;
             document.querySelector('.storage-notice').textContent = translations[lang]?.storageNotice || translations['default'].storageNotice;
